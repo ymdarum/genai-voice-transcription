@@ -8,16 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/voice-transcription.git"
+    "url": "git+https://github.com/ymdarum/voice-transcription.git"
   },
   "keywords": [
     "openai",
     "voice-recognition",
     "transcription",
     "gpt-4",
-    "speech-to-text"
+    "speech-to-text",
+    "genai"
   ],
-  "author": "Your Name",
+  "author": "Ahmad M.",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
