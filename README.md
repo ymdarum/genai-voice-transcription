@@ -1,4 +1,4 @@
-# Voice-to-Text AI Assistant
+# GenAI Voice-to-Text Assistant
 
 A real-time voice transcription application that uses OpenAI's GPT-4 to process and respond to voice input. This project demonstrates the integration of Web Speech API with OpenAI's API for natural language processing.
 
@@ -29,8 +29,8 @@ A real-time voice transcription application that uses OpenAI's GPT-4 to process 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ymdarum/voice-transcription.git
-cd voice-transcription
+git clone https://github.com/ymdarum/genai-voice-transcription.git
+cd genai-voice-transcription
 ```
 
 2. Install dependencies:
@@ -66,7 +66,7 @@ npm start
 ## Project Structure
 
 ```
-voice-transcription/
+genai-voice-transcription/
 ├── catch.js              # Main server file
 ├── package.json          # Project dependencies
 ├── .env                  # Environment variables (create this)
