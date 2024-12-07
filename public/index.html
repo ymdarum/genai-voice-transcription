@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Transcription with AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        #start-btn:hover {
+            background-color: #45a049;
+        }
+        .output-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+        .download-link {
+            display: none;
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .download-link.visible {
+            display: block;
+        }
+        #ai-response {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Transcription with AI</h1>
+        <button id="start-btn">Start Listening</button>
+        <div class="output-container">
+            <p id="output">Your voice will appear here...</p>
+        </div>
+        <div id="ai-response"></div>
+        <a id="download-link" class="download-link" href="#" download>Download Transcription</a>
+    </div>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        const startBtn = document.getElementById('start-btn');
+        const output = document.getElementById('output');
+        const aiResponse = document.getElementById('ai-response');
+        const downloadLink = document.getElementById('download-link');
+
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        startBtn.addEventListener('click', () => {
+            recognition.start();
+            output.textContent = "Listening...";
+            downloadLink.classList.remove('visible');
+            aiResponse.textContent = '';
+        });
+
+        recognition.addEventListener('result', (event) => {
+            const transcript = event.results[0][0].transcript;
+            output.textContent = `You said: "${transcript}"`;
+
+            // Save transcription and get AI response
+            fetch('/transcription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ transcription: transcript }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server Response:', data);
+                downloadLink.href = `/transcriptions/${data.filename}`;
+                downloadLink.download = data.filename;
+                downloadLink.classList.add('visible');
+
+                // Get AI response
+                return fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: transcript })
+                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                aiResponse.textContent = `AI Response: ${data.response}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                output.textContent += `\nError: ${error.message}`;
+            });
+        });
+
+        recognition.addEventListener('end', () => {
+            output.textContent += "\nRecognition stopped.";
+        });
+    </script>
+</body>
+</html> 
